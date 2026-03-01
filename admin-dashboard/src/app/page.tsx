@@ -66,9 +66,6 @@ export default function AdminDashboard() {
     e.preventDefault();
     setLoading(true);
 
-    const userInfoStr = localStorage.getItem('adminInfo');
-    const token = userInfoStr ? JSON.parse(userInfoStr).token : '';
-
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price.toString());
@@ -80,10 +77,12 @@ export default function AdminDashboard() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/products', {
+      const adminInfo = JSON.parse(localStorage.getItem('adminInfo') || '{}');
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${API_URL}/api/products`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${adminInfo.token}`,
         },
         body: formData,
       });

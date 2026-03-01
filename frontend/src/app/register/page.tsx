@@ -13,19 +13,27 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:5000/api/auth/register', {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
 
+            let data;
+            try {
+                data = await res.json();
+            } catch (err) {
+                console.error("Failed to parse JSON response");
+            }
+
             if (res.ok) {
-                const data = await res.json();
-                localStorage.setItem('userInfo', JSON.stringify(data));
+                if (data) {
+                    localStorage.setItem('userInfo', JSON.stringify(data));
+                }
                 router.push('/');
             } else {
-                const errorData = await res.json();
-                alert(errorData.message || 'Registration failed');
+                alert(data?.message || 'Registration failed');
             }
         } catch (error) {
             console.error(error);

@@ -24,7 +24,8 @@ export default function ProductDetails() {
         // We try to fetch from backend, if it fails or returns 404 (due to unseeded DB), use fallbacks
         const fetchProduct = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/products/${params.id}`);
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                const res = await fetch(`${API_URL}/api/products/${params.id}`);
                 if (res.ok) {
                     const data = await res.json();
                     setProduct(data);
@@ -85,7 +86,7 @@ export default function ProductDetails() {
                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                        src={product.image.startsWith('/uploads') ? `http://localhost:5000${product.image}` : product.image}
+                        src={product.image.startsWith('/uploads') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.image}` : product.image}
                         alt={product.name}
                         className="object-cover w-full h-full"
                     /></div>

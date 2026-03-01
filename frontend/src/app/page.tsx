@@ -19,7 +19,8 @@ export default function Home() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${API_URL}/api/products`);
         if (res.ok) {
           const data = await res.json();
           setProducts(data);
@@ -118,7 +119,7 @@ export default function Home() {
                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted mb-6">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={product.image.startsWith('/uploads') ? `http://localhost:5000${product.image}` : product.image}
+                    src={product.image.startsWith('/uploads') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.image}` : product.image}
                     alt={product.name}
                     className="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-105"
                   />

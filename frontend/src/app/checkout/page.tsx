@@ -63,7 +63,8 @@ export default function CheckoutPage() {
             }
 
             // Send JSON to backend to create the order
-            const res = await fetch('http://localhost:5000/api/orders', {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${API_URL}/api/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
