@@ -10,15 +10,7 @@
   --border: #e5e5e5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000;
-    --foreground: #ffffff;
-    --accent: #fafafa;
-    --muted: #1a1a1a;
-    --border: #333333;
-  }
-}
+
 
 body {
   color: var(--foreground);

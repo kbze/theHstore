@@ -20,6 +20,9 @@ export default function ProductDetails() {
     const [loading, setLoading] = useState(true);
     const [selectedSize, setSelectedSize] = useState<string>('');
 
+    const [backgroundPosition, setBackgroundPosition] = useState('0% 0%');
+    const [isHovering, setIsHovering] = useState(false);
+
     useEffect(() => {
         // We try to fetch from backend, if it fails or returns 404 (due to unseeded DB), use fallbacks
         const fetchProduct = async () => {
@@ -72,6 +75,13 @@ export default function ProductDetails() {
         router.push('/cart');
     };
 
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+        setBackgroundPosition(`${x}% ${y}%`);
+    };
+
     if (loading) {
         return <div className="min-h-[60vh] flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-foreground"></div></div>;
     }
@@ -80,16 +90,35 @@ export default function ProductDetails() {
         return <div className="min-h-[60vh] flex items-center justify-center">Product not found.</div>;
     }
 
+    const imageUrl = product.image.startsWith('/uploads') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.image}` : product.image;
+
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                <div
+                    className="relative aspect-[3/4] w-full bg-muted flex items-center justify-center overflow-hidden cursor-crosshair group"
+                    onMouseMove={handleMouseMove}
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                >
+                    {/* The actual image (visible when not hovering or scaling as base) */}
                     <img
-                        src={product.image.startsWith('/uploads') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.image}` : product.image}
+                        src={imageUrl}
                         alt={product.name}
-                        className="object-cover w-full h-full"
-                    /></div>
+                        className={`object-contain w-full h-full max-h-[80vh] transition-opacity duration-300 ${isHovering ? 'opacity-0' : 'opacity-100'}`}
+                    />
+
+                    {/* The zoomed background image overlay */}
+                    <div
+                        className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
+                        style={{
+                            backgroundImage: `url(${imageUrl})`,
+                            backgroundPosition: backgroundPosition,
+                            backgroundSize: '200%', // Adjust this percentage for more or less zoom
+                            backgroundRepeat: 'no-repeat'
+                        }}
+                    />
+                </div>
 
                 <div className="flex flex-col justify-center">
                     <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4">{product.name}</h1>

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import TiltCard from '@/components/TiltCard';
 
 interface Product {
   _id: string;
@@ -108,6 +109,8 @@ export default function Home() {
           <span className="text-sm font-medium text-gray-500 uppercase tracking-widest">{products.length} Items</span>
         </div>
 
+
+
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-foreground"></div>
@@ -115,20 +118,20 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
             {products.map((product) => (
-              <Link href={`/product/${product._id}`} key={product._id} className="group cursor-pointer block">
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted mb-6">
+              <Link href={`/product/${product._id}`} key={product._id} className="group cursor-pointer block perspective-[1000px]">
+                <TiltCard className="aspect-[3/4] mb-6 flex items-center justify-center p-4">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={product.image.startsWith('/uploads') ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}${product.image}` : product.image}
                     alt={product.name}
-                    className="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-105"
+                    className="object-contain w-full h-full transform transition-transform duration-700 group-hover:scale-105 drop-shadow-md"
                   />
-                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <button className="btn-primary bg-background text-foreground w-11/12 pointer-events-none">
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center translate-z-[100px]">
+                    <div className="btn-primary text-center bg-background text-foreground w-11/12 pointer-events-none shadow-2xl">
                       View Product
-                    </button>
+                    </div>
                   </div>
-                </div>
+                </TiltCard>
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-lg font-bold uppercase tracking-tight">{product.name}</h3>
