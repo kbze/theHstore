@@ -28,10 +28,8 @@ export default function RegisterPage() {
             }
 
             if (res.ok) {
-                if (data) {
-                    localStorage.setItem('userInfo', JSON.stringify(data));
-                }
-                router.push('/');
+                // Redirect to verify-email page with the email in the URL
+                router.push(`/verify-email?email=${encodeURIComponent(formData.email)}`);
             } else {
                 alert(data?.message || 'Registration failed');
             }
