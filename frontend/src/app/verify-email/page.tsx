@@ -28,10 +28,11 @@ function VerifyEmailForm() {
             const data = await res.json();
 
             if (res.ok) {
-                setMessage(data.message || 'Email verified successfully!');
+                setMessage('Verification successful! Logging you in...');
+                localStorage.setItem('userInfo', JSON.stringify(data));
                 setTimeout(() => {
-                    router.push('/login');
-                }, 2000);
+                    router.push('/');
+                }, 1500);
             } else {
                 setMessage(data.message || 'Invalid verification code.');
             }

@@ -80,7 +80,14 @@ router.post('/verify', async (req, res) => {
         user.verificationCode = undefined; // clear the code
         await user.save();
 
-        res.status(200).json({ message: 'Email verified successfully! You can now log in.' });
+        res.status(200).json({
+            message: 'Email verified successfully!',
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            token: generateToken(user._id),
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Verification Error' });
